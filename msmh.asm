@@ -86,21 +86,22 @@ nbFilePath      DB      "\MAILSLOT\MESSNGR", NULL
 
 CRLF		EQU	0Dh, 0Ah
 TAB		EQU	9h
-AboutText       DB	TAB, '-=x[ Micro$oft Messenger Hack v1.2 ]x=-', CRLF
-		DB	"Coded by Stas (Mail: stas@grad.icmc.sc.usp.br; URL: http://sysd.hypermart.net);", CRLF
-		DB	"(C)opyLeft by SysD Destructive Labs, 1997-2000", CRLF, CRLF
+AboutText       DB	TAB, '-=x[ Micro$oft Messenger Hack v1.3 ]x=-', CRLF
+		DB	"Coded by Stas (Mail: stanis@linuxmail.org; URL: http://sysdlabs.hypermart.net/);", CRLF
+		DB	"(C)opyLeft by SysD Destructive Labs, 1997-2002", CRLF, CRLF
 
 		DB	'This program is intended to provide Micro$oft Messenger Service'
 		DB	' functionality, with clean graphical interface and spoof/flood'
 		DB	' options. It allows you to send messages through 2 methods:', CRLF, CRLF
 
 		DB	'I). Through MAILSLOT\MESSNGR, using CreateFile()/WriteFile(); like Win9x WinPopup program.', CRLF
-		DB	'II). Through WinNT native Net API NetMessageBufferSend(); like WinNT/2K "net send" command.', CRLF, CRLF
+		DB	'II). Through WinNT native Net API NetMessageBufferSend(); like WinNT/2K/XP "net send" command.', CRLF, CRLF
 
-                DB      'Main disadvantages of this second method are: it needs WinNT/2K,'
-		DB	' has low speed and needs remote administrator access to use spoof.'
-		DB	' (And, sure, computer from which you want to send your message'
-		DB	' MUST be online)', CRLF, CRLF
+                DB      'Main disadvantages of this second method are: it needs WinNT/2K/XP,'
+		DB	' has low speed and is unable to send "Fake To".', CRLF
+		DB	'Main advantage of "net send" method is that you are able to'
+		DB	' send messages *across networks*, I mean directly to IP address and *not* NetBIOS name ;)', CRLF
+		DB	'Secondary advantage is to send message to specific *user name* (this one is VERY slow)', CRLF, CRLF
 
 		DB	'Read WinPopup and "net send" help for more info about usage of'
 		DB	' Micro$oft Messenger Service.', CRLF, CRLF
@@ -320,7 +321,7 @@ DlgProc PROC
 @@Send:
 	cmp	[UseNetMsg], TRUE
         jnz     @@UseWriteFile
-	call	[NetMessageBufferSend], offset From, offset To, offset From, offset Message, nbMsg_
+	call	[NetMessageBufferSend], NULL, offset To, offset From, offset Message, nbMsg_
 	or	eax, eax
         jz      @@AllOK
 
